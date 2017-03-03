@@ -51,6 +51,16 @@ void allColor(CRGB c, int NumZone){
 }
 
 /*********************************************************************************
+	Changes all LEDS to a random color
+**********************************************************************************/
+void allRandom(int NumZone){
+  for(int i=0; i<NUM_LEDS[NumZone]; i++){
+  	setPixel(i, randomColor(), NumZone);
+  }
+  showStrip(); 
+}
+
+/*********************************************************************************
    ColorWipe : Allumer toutes les leds une à une sur toute la longueur du ruban
    dans l'ordre et avec une coleur unique, mais choisi au hasard.
  *********************************************************************************/
@@ -61,6 +71,22 @@ void colorWipe(CRGB c, int SpeedDelay, int NumZone) {
     showStrip();
     delay(SpeedDelay);
   }
+}
+
+/*********************************************************************************
+	Random disolve colors
+**********************************************************************************/
+void disolve(int simultaneous, int cycles, int SpeedDelay, int NumZone){
+  for(int i=0; i<cycles; i++){
+    for(int j=0; j<simultaneous; j++){
+      int idx = random(NUM_LEDS[NumZone]);
+      setPixel(idx, CRGB::Black, NumZone);
+    }
+    showStrip();
+    delay(SpeedDelay);
+  }
+
+  allColor(CRGB::Black, NumZone);
 }
 
 /*********************************************************************************
@@ -123,27 +149,6 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-void allRandom(){
-  for(int i=0; i<NUM_LEDS; i++){
-    leds[i] = randomColor();
-  }
-  showStrip(); 
-}
-
-// Random disolve colors
-void disolve(int simultaneous, int cycles, int speed){
-  for(int i=0; i<cycles; i++){
-    for(int j=0; j<simultaneous; j++){
-      int idx = random(NUM_LEDS);
-      leds[idx] = CRGB::Black;
-    }
-    showStrip();
-    delay(speed);
-  }
-
-  allColor(CRGB::Black);
-}
 
 // Flashes given color
 // If c==NULL, random color flash
