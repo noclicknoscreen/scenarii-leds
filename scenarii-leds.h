@@ -114,6 +114,27 @@ void flash(CRGB c, int count, int speedDelay, int NumZone){
 }
 
 /*********************************************************************************
+	Rainbow colors that slowly cycle across LEDs
+**********************************************************************************/
+void rainbow(int cycles, int speedDelay, int NumZone){ // TODO direction
+  if(cycles == 0){
+    for(int i=0; i< NUM_LEDS[NumZone]; i++) {
+      setPixel(i, Wheel(((i * 256 / NUM_LEDS[NumZone])) & 255), NumZone);
+    }
+    showStrip();
+  }
+  else{
+    for(int j=0; j<256*cycles; j++) {
+      for(int i=0; i< NUM_LEDS[NumZone]; i++) {
+        setPixel(i, Wheel(((i * 256 / NUM_LEDS[NumZone]) + j) & 255), NumZone);
+      }
+      showStrip();
+      delay(speedDelay);
+    }
+  }
+}
+
+/*********************************************************************************
    SnowSparkle : Allumer toutes les leds ave une couleur choisie, puis faire
    scintiller des leds au hasard dans la zone.
  *********************************************************************************/
@@ -174,31 +195,12 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-// Rainbow colors that slowly cycle across LEDs
-void rainbow(int cycles, int speed){ // TODO direction
-  if(cycles == 0){
-    for(int i=0; i< NUM_LEDS; i++) {
-      leds[i] = Wheel(((i * 256 / NUM_LEDS)) & 255);
-    }
-    showStrip();
-  }
-  else{
-    for(int j=0; j<256*cycles; j++) {
-      for(int i=0; i< NUM_LEDS; i++) {
-        leds[i] = Wheel(((i * 256 / NUM_LEDS) + j) & 255);
-      }
-      showStrip();
-      delay(speed);
-    }
-  }
-}
-
 // Theater-style crawling lights
 void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
 
   for (int j=0; j<cycles; j++) {  
     for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
         int pos = i+q;
         leds[pos] = c;    //turn every third pixel on
       }
@@ -206,7 +208,7 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
 
       delay(speed);
 
-      for (int i=0; i < NUM_LEDS; i=i+3) {
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
         leds[i+q] = CRGB::Black;        //turn every third pixel off
       }
     }
@@ -217,7 +219,7 @@ void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
 void theaterChaseRainbow(int cycles, int speed){ // TODO direction, duration
   for (int j=0; j < 256 * cycles; j++) {     // cycle all 256 colors in the wheel
     for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS; i=i+3) {
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
         int pos = i+q;
         leds[pos] = Wheel( (i+j) % 255);    //turn every third pixel on
       }
@@ -225,7 +227,7 @@ void theaterChaseRainbow(int cycles, int speed){ // TODO direction, duration
 
       delay(speed);
 
-      for (int i=0; i < NUM_LEDS; i=i+3) {
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
         leds[i+q] = CRGB::Black;  //turn every third pixel off
       }
     }
@@ -238,7 +240,7 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed){
 
   for(int i=0; i<cycles; i++){
     for(int j=0; j<simultaneous; j++){
-      int idx = random(NUM_LEDS);
+      int idx = random(NUM_LEDS[NumZone]);
       flashes[j] = idx;
       leds[idx] = c ? c : randomColor();
     }
@@ -284,7 +286,7 @@ void cylon(CRGB c, int width, int speed){
 
 // Display alternating stripes
 void stripes(CRGB c1, CRGB c2, int width){
-  for(int i=0; i<NUM_LEDS; i++){
+  for(int i=0; i<NUM_LEDS[NumZone]; i++){
     if(i % (width * 2) < width){
       leds[i] = c1;
     }
