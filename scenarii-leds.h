@@ -90,6 +90,24 @@ void disolve(int simultaneous, int cycles, int SpeedDelay, int NumZone){
 }
 
 /*********************************************************************************
+	Flashes given color
+	If c==NULL, random color flash
+**********************************************************************************/
+void flash(CRGB c, int count, int speedDelay, int NumZone){
+  for(int i=0; i<count; i++){
+    if(c){
+      allColor(c, NumZone);
+    }
+    else{
+      allColor(randomColor(), NumZone);
+    }
+    delay(speedDelay);
+    allColor(CRGB::Black, NumZone);
+    delay(speedDelay);
+  }
+}
+
+/*********************************************************************************
    SnowSparkle : Allumer toutes les leds ave une couleur choisie, puis faire
    scintiller des leds au hasard dans la zone.
  *********************************************************************************/
