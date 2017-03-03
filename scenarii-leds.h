@@ -6,6 +6,8 @@
  par zones. 
 **********************************************************************************/
 
+#define FORWARD 0
+#define BACKWARD 1
 
 /*********************************************************************************
 	Push modification to Leds Strips.
@@ -64,10 +66,14 @@ void allRandom(int NumZone){
    ColorWipe : Allumer toutes les leds une à une sur toute la longueur du ruban
    dans l'ordre et avec une coleur unique, mais choisi au hasard.
  *********************************************************************************/
-void colorWipe(CRGB c, int SpeedDelay, int NumZone) {
+void colorWipe(CRGB c, int SpeedDelay, int NumZone, int direction = FORWARD) {
   // Choix d'une couleur aléatoire
   for (uint16_t i = 0; i < NUM_LEDS[NumZone]; i++) {
-    setPixel(i, c, NumZone);
+  	if(direction == FORWARD){
+    	setPixel(i, c, NumZone);
+    } else{
+    	setPixel(NUM_LEDS[NumZone]-1-i, c, NumZone);
+    }
     showStrip();
     delay(SpeedDelay);
   }
@@ -167,36 +173,6 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-// Flashes given color
-// If c==NULL, random color flash
-void flash(CRGB c, int count, int speed){
-  for(int i=0; i<count; i++){
-    if(c){
-      allColor(c);
-    }
-    else{
-      allColor(randomColor());
-    }
-    delay(speed);
-    allColor(CRGB::Black);
-    delay(speed);
-  }
-}
-
-// Wipes color from end to end
-void colorWipe(CRGB c, int speed, int direction){
-  for(int i=0; i<NUM_LEDS; i++){
-    if(direction == FORWARD){
-      leds[i] = c;
-    }
-    else{
-      leds[NUM_LEDS-1-i] = c;
-    }
-    showStrip();
-    delay(speed);
-  }
-}
 
 // Rainbow colors that slowly cycle across LEDs
 void rainbow(int cycles, int speed){ // TODO direction
