@@ -85,31 +85,36 @@ void colorWipe(CRGB c, int SpeedDelay, int NumZone, int direction = FORWARD) {
 }
 
 /*********************************************************************************
-   ColorWipeTest : Tester le paramétrage des zones - DEBUG ONLY -
+	Sliding bar across LEDs
  *********************************************************************************/
-void testZone(CRGB c, int SpeedDelay, int NumZone) {
-  Serial.println("=================================================");
-  Serial.print("Zone #"); Serial.println(NumZone);
-  Serial.print("Nb de leds : "); Serial.println(NUM_LEDS[NumZone]);
-  // Choix d'une couleur aléatoire
-  for (uint16_t i = 0; i < NUM_LEDS[NumZone]; i++) {
-	Serial.print(i);
-	Serial.print(","); 
-	if ((i+1) % 30 == 0) {
-		Serial.print("\n"); 
-	}
-	setPixel(i, c, NumZone);
+void cylon(CRGB c, int width, int speedDelay, int NumZone){
+  // First slide the leds in one direction
+  for(int i = 0; i <= NUM_LEDS[NumZone]-width; i++) {
+    for(int j=0; j<width; j++){
+      setPixel(i+j, c, NumZone);
+    }
+
     showStrip();
-    delay(SpeedDelay);
+
+    // now that we've shown the leds, reset to black for next loop
+    for(int j=0; j<width; j++){
+      setPixel(i+j, CRGB::Black, NumZone);
+    }
+    delay(speedDelay);
   }
-  Serial.println("\nAttente 10s : ");
-  for (int i=1; i<=9;i++) {
-  	Serial.print(".");
-  	delay(1000);
+
+  // Now go in the other direction.  
+  for(int i = NUM_LEDS[NumZone]-width; i >= 0; i--) {
+    for(int j=0; j<width; j++){
+      setPixel(i+j, c, NumZone);
+    }
+    showStrip();
+    for(int j=0; j<width; j++){
+      setPixel(i+j, CRGB::Black, NumZone);
+    }
+
+    delay(speedDelay);
   }
-  Serial.println(".");
-  delay(1000);
-  allColor(CRGB::Black, NumZone);
 }
 
 /*********************************************************************************
@@ -253,6 +258,34 @@ void theaterChaseRainbow(int cycles, int speedDelay, int NumZone){ // TODO direc
   }
 }
 
+/*********************************************************************************
+   ColorWipeTest : Tester le paramétrage des zones - DEBUG ONLY -
+ *********************************************************************************/
+void testZone(CRGB c, int SpeedDelay, int NumZone) {
+  Serial.println("=================================================");
+  Serial.print("Zone #"); Serial.println(NumZone);
+  Serial.print("Nb de leds : "); Serial.println(NUM_LEDS[NumZone]);
+  // Choix d'une couleur aléatoire
+  for (uint16_t i = 0; i < NUM_LEDS[NumZone]; i++) {
+	Serial.print(i);
+	Serial.print(","); 
+	if ((i+1) % 30 == 0) {
+		Serial.print("\n"); 
+	}
+	setPixel(i, c, NumZone);
+    showStrip();
+    delay(SpeedDelay);
+  }
+  Serial.println("\nAttente 10s : ");
+  for (int i=1; i<=9;i++) {
+  	Serial.print(".");
+  	delay(1000);
+  }
+  Serial.println(".");
+  delay(1000);
+  allColor(CRGB::Black, NumZone);
+}
+
 /*
    Cyclon
 
@@ -291,36 +324,6 @@ void theaterChaseRainbow(int cycles, int speedDelay, int NumZone){ // TODO direc
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-// Sliding bar across LEDs
-void cylon(CRGB c, int width, int speedDelay, int NumZone){
-  // First slide the leds in one direction
-  for(int i = 0; i <= NUM_LEDS-width; i++) {
-    for(int j=0; j<width; j++){
-      leds[i+j] = c;
-    }
-
-    showStrip();
-
-    // now that we've shown the leds, reset to black for next loop
-    for(int j=0; j<5; j++){
-      leds[i+j] = CRGB::Black;
-    }
-    delay(speedDelay);
-  }
-
-  // Now go in the other direction.  
-  for(int i = NUM_LEDS-width; i >= 0; i--) {
-    for(int j=0; j<width; j++){
-      leds[i+j] = c;
-    }
-    showStrip();
-    for(int j=0; j<width; j++){
-      leds[i+j] = CRGB::Black;
-    }
-
-    delay(speedDelay);
-  }
-}
 
 // Display alternating stripes
 void stripes(CRGB c1, CRGB c2, int width){
