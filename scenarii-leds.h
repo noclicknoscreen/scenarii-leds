@@ -80,6 +80,34 @@ void colorWipe(CRGB c, int SpeedDelay, int NumZone, int direction = FORWARD) {
 }
 
 /*********************************************************************************
+   ColorWipeTest : Tester le paramétrage des zones - DEBUG ONLY -
+ *********************************************************************************/
+void testZone(CRGB c, int SpeedDelay, int NumZone) {
+  Serial.println("=================================================");
+  Serial.print("Zone #"); Serial.println(NumZone);
+  Serial.print("Nb de leds : "); Serial.println(NUM_LEDS[NumZone]);
+  // Choix d'une couleur aléatoire
+  for (uint16_t i = 0; i < NUM_LEDS[NumZone]; i++) {
+	Serial.print(i);
+	Serial.print(","); 
+	if ((i+1) % 30 == 0) {
+		Serial.print("\n"); 
+	}
+	setPixel(i, c, NumZone);
+    showStrip();
+    delay(SpeedDelay);
+  }
+  Serial.println("\nAttente 10s : ");
+  for (int i=1; i<=9;i++) {
+  	Serial.print(".");
+  	delay(1000);
+  }
+  Serial.println(".");
+  delay(1000);
+  allColor(CRGB::Black, NumZone);
+}
+
+/*********************************************************************************
 	Random disolve colors
 **********************************************************************************/
 void disolve(int simultaneous, int cycles, int SpeedDelay, int NumZone){
@@ -137,7 +165,7 @@ void rainbow(int cycles, int speedDelay, int NumZone){ // TODO direction
 /*********************************************************************************
    SnowSparkle : Allumer toutes les leds ave une couleur choisie, puis faire
    scintiller des leds au hasard dans la zone.
- *********************************************************************************/
+**********************************************************************************/
 void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
   c.r *= 0.5;
   c.g *= 0.5;
@@ -156,6 +184,26 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
   delay(SpeedDelay);
 }
 
+/*********************************************************************************
+	Theater-style crawling lights
+**********************************************************************************/
+void theaterChase(CRGB c, int cycles, int speedDelay, int NumZone){ // TODO direction
+  for (int j=0; j<cycles; j++) {  
+    for (int q=0; q < 3; q++) {
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
+        int pos = i+q;
+        setPixel(pos, c, NumZone); //turn every third pixel on
+      }
+      showStrip();
+
+      delay(speedDelay);
+
+      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
+        setPixel(i+q, CRGB::Black, NumZone); //turn every third pixel off
+      }
+    }
+  }
+}
 
 /*
    Cyclon
@@ -195,25 +243,7 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-// Theater-style crawling lights
-void theaterChase(CRGB c, int cycles, int speed){ // TODO direction
 
-  for (int j=0; j<cycles; j++) {  
-    for (int q=0; q < 3; q++) {
-      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
-        int pos = i+q;
-        leds[pos] = c;    //turn every third pixel on
-      }
-      showStrip();
-
-      delay(speed);
-
-      for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
-        leds[i+q] = CRGB::Black;        //turn every third pixel off
-      }
-    }
-  }
-}
 
 // Theater-style crawling lights with rainbow effect
 void theaterChaseRainbow(int cycles, int speed){ // TODO direction, duration
@@ -225,7 +255,7 @@ void theaterChaseRainbow(int cycles, int speed){ // TODO direction, duration
       }
       showStrip();
 
-      delay(speed);
+      delay(speedDelay);
 
       for (int i=0; i < NUM_LEDS[NumZone]; i=i+3) {
         leds[i+q] = CRGB::Black;  //turn every third pixel off
@@ -245,11 +275,11 @@ void lightning(CRGB c, int simultaneous, int cycles, int speed){
       leds[idx] = c ? c : randomColor();
     }
     showStrip();
-    delay(speed);
+    delay(speedDelay);
     for(int s=0; s<simultaneous; s++){
       leds[flashes[s]] = CRGB::Black;
     }
-    delay(speed);
+    delay(speedDelay);
   }
 }
 
@@ -267,7 +297,7 @@ void cylon(CRGB c, int width, int speed){
     for(int j=0; j<5; j++){
       leds[i+j] = CRGB::Black;
     }
-    delay(speed);
+    delay(speedDelay);
   }
 
   // Now go in the other direction.  
@@ -280,7 +310,7 @@ void cylon(CRGB c, int width, int speed){
       leds[i+j] = CRGB::Black;
     }
 
-    delay(speed);
+    delay(speedDelay);
   }
 }
 
