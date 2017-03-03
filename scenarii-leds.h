@@ -6,8 +6,13 @@
  par zones. 
 **********************************************************************************/
 
+// Directions
 #define FORWARD 0
 #define BACKWARD 1
+// Speed Delay
+#define SLOW 250
+#define MEDIUM 50
+#define FAST 5
 
 /*********************************************************************************
 	Push modification to Leds Strips.
@@ -142,6 +147,27 @@ void flash(CRGB c, int count, int speedDelay, int NumZone){
 }
 
 /*********************************************************************************
+	Random flashes of lightning
+**********************************************************************************/
+void lightning(CRGB c, int simultaneous, int cycles, int speedDelay, int NumZone){
+  int flashes[simultaneous];
+
+  for(int i=0; i<cycles; i++){
+    for(int j=0; j<simultaneous; j++){
+      int idx = random(NUM_LEDS[NumZone]);
+      flashes[j] = idx;
+      setPixel(idx,  c ? c : randomColor(), NumZone);
+    }
+    showStrip();
+    delay(speedDelay);
+    for(int s=0; s<simultaneous; s++){
+      setPixel(flashes[s],  CRGB::Black, NumZone);
+   }
+    delay(speedDelay);
+  }
+}
+
+/*********************************************************************************
 	Rainbow colors that slowly cycle across LEDs
 **********************************************************************************/
 void rainbow(int cycles, int speedDelay, int NumZone){ // TODO direction
@@ -264,25 +290,6 @@ void theaterChaseRainbow(int cycles, int speedDelay, int NumZone){ // TODO direc
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
-// Random flashes of lightning
-void lightning(CRGB c, int simultaneous, int cycles, int speedDelay, int NumZone){
-  int flashes[simultaneous];
-
-  for(int i=0; i<cycles; i++){
-    for(int j=0; j<simultaneous; j++){
-      int idx = random(NUM_LEDS[NumZone]);
-      flashes[j] = idx;
-      leds[idx] = c ? c : randomColor();
-    }
-    showStrip();
-    delay(speedDelay);
-    for(int s=0; s<simultaneous; s++){
-      leds[flashes[s]] = CRGB::Black;
-    }
-    delay(speedDelay);
-  }
-}
 
 // Sliding bar across LEDs
 void cylon(CRGB c, int width, int speedDelay, int NumZone){
