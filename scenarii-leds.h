@@ -10,6 +10,7 @@
 #define FORWARD 0
 #define BACKWARD 1
 // Speed Delay
+#define SUPER_SLOW 500
 #define SLOW 250
 #define MEDIUM 50
 #define FAST 5
@@ -201,9 +202,6 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
   c.r *= 0.5;
   c.g *= 0.5;
   c.b *= 0.5;
-  // red = byte(int(c.r * 0.5));
-  // green = byte(int(c.g * 0.5));
-  // blue = byte(int(c.b * 0.5));
   allColor(c, NumZone);
   // Choisir un pixel au hasard
   int Pixel = random(NUM_LEDS[NumZone]);
@@ -214,6 +212,22 @@ void SnowSparkle(CRGB c, int SparkleDelay, int SpeedDelay, int NumZone) {
   showStrip();
   delay(SpeedDelay);
 }
+
+/*********************************************************************************
+	Display alternating stripes
+**********************************************************************************/
+void stripes(CRGB c1, CRGB c2, int width, int NumZone){
+  for(int i=0; i<NUM_LEDS[NumZone]; i++){
+    if(i % (width * 2) < width){
+      setPixel(i, c1, NumZone);
+    }
+    else{
+      setPixel(i, c2, NumZone);
+    } 
+  }
+  showStrip();
+}
+
 
 /*********************************************************************************
 	Theater-style crawling lights
@@ -286,61 +300,11 @@ void testZone(CRGB c, int SpeedDelay, int NumZone) {
   allColor(CRGB::Black, NumZone);
 }
 
-/*
-   Cyclon
-
-  void CylonBounce(byte red, byte green, byte blue, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone) {
-
-  for (int i = 0; i < NUM_LEDS[NumZone] - EyeSize - 2; i++) {
-    setAll(0, 0, 0, NumZone);
-    setPixel(i, red / 10, green / 10, blue / 10, NumZone);
-    for (int j = 1; j <= EyeSize; j++) {
-      setPixel(i + j, red, green, blue, NumZone);
-    }
-    setPixel(i + EyeSize + 1, red / 10, green / 10, blue / 10, NumZone);
-    showStrip();
-    delay(SpeedDelay);
-  }
-
-  delay(ReturnDelay);
-
-  for (int i = NUM_LEDS[NumZone] - EyeSize - 2; i > 0; i--) {
-    setAll(0, 0, 0, NumZone);
-    setPixel(i, red / 10, green / 10, blue / 10, NumZone);
-    for (int j = 1; j <= EyeSize; j++) {
-      setPixel(i + j, red, green, blue, NumZone);
-    }
-    setPixel(i + EyeSize + 1, red / 10, green / 10, blue / 10, NumZone);
-    showStrip();
-    delay(SpeedDelay);
-  }
-
-  delay(ReturnDelay);
-  }
-*/
-
 /** 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 FAST-LEDS NATIVES SCENARII
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-// Display alternating stripes
-void stripes(CRGB c1, CRGB c2, int width){
-  for(int i=0; i<NUM_LEDS[NumZone]; i++){
-    if(i % (width * 2) < width){
-      leds[i] = c1;
-    }
-    else{
-      leds[i] = c2;
-    } 
-  }
-  showStrip();
-}
-
-// Theater-style crawling of stripes
-void stripesChase(CRGB c1, CRGB c2, int width, int cycles, int speedDelay, int NumZone){ // TODO direction
-
-}
 
 */
