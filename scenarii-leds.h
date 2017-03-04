@@ -300,6 +300,108 @@ void testZone(CRGB c, int SpeedDelay, int NumZone) {
   allColor(CRGB::Black, NumZone);
 }
 
+/*********************************************************************************
+   CenterToOutside 
+ *********************************************************************************/
+void CenterToOutside(CRGB c, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone) {
+CRGB cSur10 = CRGB(c.red/10, c.green/10, c.blue/10);
+  for(int i =((NUM_LEDS[NumZone]-EyeSize)/2); i>=0; i--) {
+    allColor(CRGB::Black, NumZone);
+    setPixel(i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(i+j, c, NumZone); 
+    }
+    setPixel(i+EyeSize+1, cSur10, NumZone);
+    
+    setPixel(NUM_LEDS[NumZone]-i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(NUM_LEDS[NumZone]-i-j, c, NumZone); 
+    }
+    setPixel(NUM_LEDS[NumZone]-i-EyeSize-1, cSur10, NumZone);
+    
+    showStrip();
+    delay(SpeedDelay);
+  }
+  delay(ReturnDelay);
+}
+
+/*********************************************************************************
+   OutsideToCenter 
+ *********************************************************************************/
+void OutsideToCenter(CRGB c, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone) {
+  CRGB cSur10 = CRGB(c.red/10, c.green/10, c.blue/10);
+  for(int i = 0; i<=((NUM_LEDS[NumZone]-EyeSize)/2); i++) {
+    allColor(CRGB::Black, NumZone);
+    setPixel(i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(i+j, c, NumZone); 
+    }
+    setPixel(i+EyeSize+1, cSur10, NumZone);
+    
+    setPixel(NUM_LEDS[NumZone]-i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(NUM_LEDS[NumZone]-i-j, c, NumZone); 
+    }
+    setPixel(NUM_LEDS[NumZone]-i-EyeSize-1, cSur10, NumZone);
+    
+    showStrip();
+    delay(SpeedDelay);
+  }
+  delay(ReturnDelay);
+}
+
+/*********************************************************************************
+   LeftToRight 
+ *********************************************************************************/
+void LeftToRight(CRGB c, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone) {
+  CRGB cSur10 = CRGB(c.red/10, c.green/10, c.blue/10);
+  for(int i = 0; i < NUM_LEDS[NumZone]-EyeSize-2; i++) {
+    allColor(CRGB::Black, NumZone);
+    setPixel(i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(i+j, c, NumZone); 
+    }
+    setPixel(i+EyeSize+1, cSur10, NumZone);
+    showStrip();
+    delay(SpeedDelay);
+  }
+  delay(ReturnDelay);
+}
+
+/*********************************************************************************
+   RightToLeft 
+ *********************************************************************************/
+void RightToLeft(CRGB c, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone) {
+  CRGB cSur10 = CRGB(c.red/10, c.green/10, c.blue/10);
+  for(int i = NUM_LEDS[NumZone]-EyeSize-2; i > 0; i--) {
+    allColor(CRGB::Black, NumZone);
+    setPixel(i, cSur10, NumZone);
+    for(int j = 1; j <= EyeSize; j++) {
+      setPixel(i+j, c, NumZone); 
+    }
+    setPixel(i+EyeSize+1, cSur10, NumZone);
+    showStrip();
+    delay(SpeedDelay);
+  }
+  delay(ReturnDelay);
+}
+
+
+/*********************************************************************************
+   NewKITT 
+ *********************************************************************************/
+void NewKITT(CRGB c, int EyeSize, int SpeedDelay, int ReturnDelay, int NumZone){
+  RightToLeft(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  LeftToRight(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  OutsideToCenter(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  CenterToOutside(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  LeftToRight(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  RightToLeft(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  CenterToOutside(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+  OutsideToCenter(c, EyeSize, SpeedDelay, ReturnDelay, NumZone);
+}
+
+
 /** 
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 FAST-LEDS NATIVES SCENARII
